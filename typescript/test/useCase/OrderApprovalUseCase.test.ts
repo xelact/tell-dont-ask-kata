@@ -11,13 +11,12 @@ describe('OrderApprovalUseCase', () => {
   let orderRepository: TestOrderRepository;
   let useCase: OrderApprovalUseCase;
 
-  beforeEach( () => {
+  beforeEach(() => {
     orderRepository = new TestOrderRepository();
     useCase = new OrderApprovalUseCase(orderRepository);
   });
   it('approvedExistingOrder', () => {
     let initialOrder: Order = new Order();
-    initialOrder.setStatus(OrderStatus.CREATED);
     initialOrder.setId(1);
     orderRepository.addOrder(initialOrder);
 
@@ -33,7 +32,6 @@ describe('OrderApprovalUseCase', () => {
 
   it('rejectedExistingOrder', () => {
     let initialOrder: Order = new Order();
-    initialOrder.setStatus(OrderStatus.CREATED);
     initialOrder.setId(1);
     orderRepository.addOrder(initialOrder);
 
@@ -48,8 +46,7 @@ describe('OrderApprovalUseCase', () => {
   });
 
   it('cannotApproveRejectedOrder', () => {
-    const initialOrder: Order = new Order();
-    initialOrder.setStatus(OrderStatus.REJECTED);
+    const initialOrder: Order = new Order(OrderStatus.REJECTED);
     initialOrder.setId(1);
     orderRepository.addOrder(initialOrder);
 
@@ -62,8 +59,7 @@ describe('OrderApprovalUseCase', () => {
   });
 
   it('cannotRejectApprovedOrder', () => {
-    const initialOrder: Order = new Order();
-    initialOrder.setStatus(OrderStatus.APPROVED);
+    const initialOrder: Order = new Order(OrderStatus.APPROVED);
     initialOrder.setId(1);
     orderRepository.addOrder(initialOrder);
 
@@ -71,13 +67,12 @@ describe('OrderApprovalUseCase', () => {
     request.setOrderId(1);
     request.setApproved(false);
 
-    expect(() =>  useCase.run(request)).toThrow(ApprovedOrderCannotBeRejectedException);
+    expect(() => useCase.run(request)).toThrow(ApprovedOrderCannotBeRejectedException);
     expect(orderRepository.getSavedOrder()).toBe(null);
   });
 
   it('shippedOrdersCannotBeApproved', () => {
-    const initialOrder: Order = new Order();
-    initialOrder.setStatus(OrderStatus.SHIPPED);
+    const initialOrder: Order = new Order(OrderStatus.SHIPPED);
     initialOrder.setId(1);
     orderRepository.addOrder(initialOrder);
 
@@ -90,8 +85,7 @@ describe('OrderApprovalUseCase', () => {
   });
 
   it('shippedOrdersCannotBeRejected', () => {
-    let initialOrder: Order = new Order();
-    initialOrder.setStatus(OrderStatus.SHIPPED);
+    let initialOrder: Order = new Order(OrderStatus.SHIPPED);
     initialOrder.setId(1);
     orderRepository.addOrder(initialOrder);
 

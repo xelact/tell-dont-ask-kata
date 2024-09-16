@@ -12,16 +12,15 @@ describe('OrderShipmentUseCase', () => {
   let shipmentService: TestShipmentService;
   let useCase: OrderShipmentUseCase;
 
-  beforeEach( () => {
+  beforeEach(() => {
     orderRepository = new TestOrderRepository();
     shipmentService = new TestShipmentService();
     useCase = new OrderShipmentUseCase(orderRepository, shipmentService);
   });
-  
+
   it('shipApprovedOrder', () => {
-    let initialOrder: Order = new Order();
+    let initialOrder: Order = new Order(OrderStatus.APPROVED);
     initialOrder.setId(1);
-    initialOrder.setStatus(OrderStatus.APPROVED);
     orderRepository.addOrder(initialOrder);
 
     let request: OrderShipmentRequest = new OrderShipmentRequest();
@@ -36,7 +35,6 @@ describe('OrderShipmentUseCase', () => {
   it('createdOrdersCannotBeShipped', () => {
     let initialOrder: Order = new Order();
     initialOrder.setId(2);
-    initialOrder.setStatus(OrderStatus.CREATED);
     orderRepository.addOrder(initialOrder);
 
     let request: OrderShipmentRequest = new OrderShipmentRequest();
@@ -48,9 +46,8 @@ describe('OrderShipmentUseCase', () => {
   });
 
   it('rejectedOrdersCannotBeShipped', () => {
-    let initialOrder: Order = new Order();
+    let initialOrder: Order = new Order(OrderStatus.REJECTED);
     initialOrder.setId(3);
-    initialOrder.setStatus(OrderStatus.REJECTED);
     orderRepository.addOrder(initialOrder);
 
     let request: OrderShipmentRequest = new OrderShipmentRequest();
@@ -62,9 +59,8 @@ describe('OrderShipmentUseCase', () => {
   });
 
   it('shippedOrdersCannotBeShippedAgain', () => {
-    let initialOrder: Order = new Order();
+    let initialOrder: Order = new Order(OrderStatus.SHIPPED);
     initialOrder.setId(4);
-    initialOrder.setStatus(OrderStatus.SHIPPED);
     orderRepository.addOrder(initialOrder);
 
     let request: OrderShipmentRequest = new OrderShipmentRequest();
